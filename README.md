@@ -35,3 +35,22 @@ Reason
 Search
 
 ChatGPT can make mistakes. Check important info.
+
+
+
+
+
+
+
+
+
+
+✅ Key Differences Table
+Feature	List	Tuple	Dictionary	Set
+Syntax	[1, 2, 3]	(1, 2, 3)	{"a": 1, "b": 2}	{1, 2, 3}
+Ordered?	✅ Yes	✅ Yes	✅ Yes (Py 3.7+)	❌ No
+Mutable?	✅ Yes	❌ No	✅ Yes	✅ Yes
+Duplicates?	✅ Allowed	✅ Allowed	❌ Keys not allowed	❌ Not allowed
+Indexed?	✅ Yes (by index)	✅ Yes	✅ (by keys)	❌ No direct indexing
+Use Case	List of items	Fixed data	Key-value mapping	Unique items
+![alt text](image.png)
