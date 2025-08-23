@@ -1,0 +1,265 @@
+🐼 Pandas Interview Notes (Targeted for DE Roles)
+1. Basics (must know)
+
+
+DataFrames and Series:
+DataFrames: The primary data structure in pandas, representing tabular data with rows and columns.
+Series: A one-dimensional array-like object containing a sequence of values, which can be of any data type
+Read/Write
+
+1. pd.read_csv(), pd.read_json(), pd.read_excel(), pd.read_parquet()
+
+.to_csv(), .to_parquet(), .to_json()
+
+👉 Expect Q: “How do you read a large CSV efficiently?”
+→ Answer: use chunksize or iterator=True.
+
+Data overview
+
+.head(), .tail(), .info(), .describe()
+
+.shape, .columns, .dtypes
+
+2. Indexing & Selection
+
+iloc vs loc
+
+iloc → integer position, loc → label-based.
+
+Boolean filtering → df[df['col'] > 10]
+
+isin, between, query()
+
+👉 Interview Q: “Difference between loc & iloc?”
+👉 Q: “How to filter rows with multiple conditions?”
+
+3. Missing Data
+
+.isnull(), .notnull()
+
+.fillna(value / method='ffill'/'bfill')
+
+.dropna(how='any'/'all', axis=0/1)
+
+👉 Expect Q: “How do you handle missing values in Pandas?”
+
+4. Data Cleaning & Transformation
+
+Rename cols → df.rename(columns={'old':'new'})
+
+Change dtypes → df['col'] = df['col'].astype(int)
+
+String ops → df['col'].str.lower(), .str.strip(), .str.contains()
+
+Apply functions → df['new'] = df['col'].apply(lambda x: ...)
+
+5. Aggregation & Grouping
+
+.groupby('col').agg({'col2':'sum'})
+
+Common aggs: sum, mean, count, nunique, max, min
+
+.pivot_table(values, index, columns, aggfunc)
+
+.crosstab()
+
+👉 Interview Q: “How do you get top N customers by revenue?”
+👉 Use groupby + sort_values + head.
+
+6. Joins & Merge
+
+pd.merge(df1, df2, on='col', how='inner/left/right/outer')
+
+df1.join(df2, how='left')
+
+pd.concat([df1, df2], axis=0/1)
+
+👉 Q: “Difference between merge, join, concat?”
+
+7. Sorting & Ranking
+
+.sort_values(by='col', ascending=False)
+
+.nlargest(n, 'col'), .nsmallest(n, 'col')
+
+.rank(method='dense/average')
+
+8. Window Functions (very important 🚀)
+
+.rolling(window=3).mean() → moving average
+
+.expanding().sum()
+
+.cumsum(), .cummax()
+
+👉 Many DE interviews ask: “How to calculate rolling average in Pandas?”
+
+9. MultiIndex & Advanced
+
+Creating MultiIndex: df.set_index(['col1','col2'])
+
+Stack / Unstack
+
+.melt() → reshape wide to long
+
+.pivot() → reshape long to wide
+
+👉 Advanced Q: “How to reshape data for reporting?”
+
+10. Performance Tricks
+
+Use vectorized ops instead of loops
+
+Use df.itertuples() instead of iterrows() if loop needed
+
+Handle big data:
+
+chunksize while reading
+
+Use Dask/PySpark for very large datasets
+
+🎯 Focus for Interviews (Top Asked Areas)
+
+✅ Must master:
+
+Reading/writing data
+
+Indexing (loc/iloc, filters)
+
+Missing data handling
+
+GroupBy + Aggregations
+
+Merge/Join
+
+Sorting & Ranking
+
+Window functions
+
+⚡ Medium focus:
+
+String ops & apply
+
+Pivot/Melt
+
+MultiIndex
+
+🟦 Low focus (rarely asked):
+
+Styling, plotting inside Pandas (not needed).
+
+
+
+----------------------------------------------------Medium------------------------------------------------
+
+1.DataFrames and Series:
+DataFrames: The primary data structure in pandas, representing tabular data with rows and columns.
+Series: A one-dimensional array-like object containing a sequence of values, which can be of any data type.
+Data Loading and Saving:
+Reading data: Using functions like pd.read_csv(), pd.read_excel(), pd.read_sql(), etc., to load data from various file formats and databases.
+Writing data: Using functions like df.to_csv(), df.to_excel(), df.to_sql(), etc., to save data into various file formats and databases.
+3. Data Cleaning and Preparation:
+Handling missing values: Methods such as df.isnull(), df.dropna(), and df.fillna().
+Data type conversion: Functions like df.astype().
+String manipulation: Using the .str accessor for string operations on Series.
+4. Indexing and Selecting Data:
+Indexing: Using df.set_index() and df.reset_index().
+Selecting data: Using .loc[], .iloc[], and boolean indexing for accessing specific rows and columns.
+5. Data Transformation:
+Aggregation: Using df.groupby() for aggregating data by groups.
+Pivot tables: Using df.pivot_table() for summarizing data.
+Merging and joining: Using pd.merge(), df.join(), and pd.concat() for combining multiple DataFrames.
+6. Reshaping Data:
+Melt and Pivot: Using pd.melt() to transform DataFrames from wide to long format and df.pivot() to transform DataFrames from long to wide format.
+Stack and Unstack: Using df.stack() and df.unstack() to reshape the data.
+7. Time Series Data:
+Datetime operations: Using pd.to_datetime(), df.resample(), and .dt accessor for time-based operations.
+Rolling and expanding windows: Using df.rolling() and df.expanding() for calculating rolling statistics.
+8. Performance Optimization:
+Vectorization: Avoiding loops by using pandas’ built-in functions that operate on entire columns or DataFrames.
+Memory usage: Optimizing memory usage by downcasting data types with pd.to_numeric().
+9. Visualization:
+Plotting: Using df.plot() for basic visualizations and integrating with libraries like Matplotlib and Seaborn for advanced visualizations.
+10. Advanced Data Manipulation:
+Apply functions: Using df.apply() and df.applymap() for applying functions to DataFrame elements.
+Lambda functions: Using lambda functions for inline operations within apply() and other pandas methods.
+W
+ith Exampls
+1. DataFrame Creation
+Creating DataFrames from various sources like dictionaries, lists, or external files (CSV, Excel).
+import pandas as pd
+# From dictionary
+data = {'Name': ['Alice', 'Bob', 'Charlie'], 'Age': [25, 30, 35]}
+df = pd.DataFrame(data)
+print(df)
+# From CSV
+df_csv = pd.read_csv('data.csv')
+print(df_csv)
+# From Excel
+df_excel = pd.read_excel('data.xlsx')
+print(df_excel)
+2. Data Cleaning
+Handling missing values, duplicates, and incorrect data types.
+# Handling missing values
+df = df.fillna(0)  # Fill NaNs with 0
+df = df.dropna()  # Drop rows with NaNs
+# Removing duplicates
+df = df.drop_duplicates()
+# Converting data types
+df['Age'] = df['Age'].astype(int)
+3. Data Transformation
+Applying operations to transform the data such as filtering, sorting, and grouping.
+# Filtering data
+df_filtered = df[df['Age'] > 30]
+# Sorting data
+df_sorted = df.sort_values(by='Age', ascending=False)
+# Grouping data
+df_grouped = df.groupby('Age').size().reset_index(name='Count')
+print(df_grouped)
+4. Merging and Joining
+Combining multiple DataFrames using different types of joins.
+# Creating another DataFrame
+data2 = {'Name': ['Alice', 'Bob', 'David'], 'Salary': [50000, 60000, 70000]}
+df2 = pd.DataFrame(data2)
+# Merging DataFrames
+df_merged = pd.merge(df, df2, on='Name', how='inner')  # Inner join
+print(df_merged)
+# Concatenating DataFrames
+df_concat = pd.concat([df, df2], axis=0)  # Concatenate along rows
+print(df_concat)
+5. Aggregation and Summary Statistics
+Calculating summary statistics and aggregating data.
+# Summary statistics
+print(df.describe())
+# Aggregation
+df_agg = df.groupby('Age').agg({'Salary': ['mean', 'sum']})
+print(df_agg)
+6. Reshaping Data
+Pivoting and melting DataFrames to reshape the data.
+# Pivoting
+pivot_df = df.pivot_table(values='Salary', index='Name', columns='Age', aggfunc='mean')
+print(pivot_df)
+# Melting
+melted_df = pd.melt(df, id_vars=['Name'], value_vars=['Age', 'Salary'])
+print(melted_df)
+7. Time Series Analysis
+Working with time series data, including date parsing and resampling.
+# Creating a time series DataFrame
+date_rng = pd.date_range(start='2023-01-01', end='2023-01-10', freq='D')
+df_time = pd.DataFrame(date_rng, columns=['date'])
+df_time['data'] = np.random.randint(0, 100, size=(len(date_rng)))
+# Setting the index
+df_time.set_index('date', inplace=True)
+# Resampling
+df_resampled = df_time.resample('D').sum()
+print(df_resampled)
+8. Data Export
+Saving the manipulated DataFrames back to files.
+# To CSV
+df.to_csv('cleaned_data.csv', index=False)
+# To Excel
+df.to_excel('cleaned_data.xlsx', index=False)
+These concepts and operations form the backbone of data engineering tasks in pandas, enabling efficient data manipulation and preparation for further analysis or processing.
+Understanding and mastering these concepts will significantly enhance your ability to use pandas effectively for data engineering tasks.
+Pandas is a powerful library in Python used extensively for data manipulation and analysis. In the context of data engineering, several key concepts and operations are particularly important. Here are some of the most crucial ones with examples…
+ 
